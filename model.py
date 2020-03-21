@@ -79,11 +79,11 @@ class BiLSTM_CNN_CRF(nn.Module):
             nn.init.uniform_(self.word_emb.weight, -0.25, 0.25)
 
         self.bi_lstm = nn.LSTM(input_size=args.word_emb_dim + args.final_char_dim,
-                               hidden_size=args.hidden_dim,  # Bidirectional will double the hidden_size
+                               hidden_size=args.hidden_dim // 2,  # Bidirectional will double the hidden_size
                                bidirectional=True,
                                batch_first=True)
 
-        self.output_linear = nn.Linear(args.hidden_dim * 2, len(get_labels(args)))
+        self.output_linear = nn.Linear(args.hidden_dim, len(get_labels(args)))
 
         self.crf = CRF(num_tags=len(get_labels(args)), batch_first=True)
 
@@ -93,7 +93,7 @@ class BiLSTM_CNN_CRF(nn.Module):
         :param char_ids: (batch_size, max_seq_len, max_word_len)
         :param mask: (batch_size, max_seq_len)
         :param label_ids: (batch_size, max_seq_len)
-        :return: (batch_size, max_seq_len, hidden_dim * 2)
+        :return: (batch_size, max_seq_len, hidden_dim)
         """
         w_emb = self.word_emb(word_ids)
         c_emb = self.char_cnn(char_ids)
