@@ -12,6 +12,17 @@ from seqeval.metrics import precision_score, recall_score, f1_score, classificat
 logger = logging.getLogger(__name__)
 
 
+def get_test_texts(args):
+    texts = []
+    with open(os.path.join(args.data_dir, args.test_file), 'r', encoding='utf-8') as f:
+        for line in f:
+            text, _ = line.split('\t')
+            text = text.split()
+            texts.append(text)
+
+    return texts
+
+
 def build_vocab(args):
     """
     Build vocab from train set

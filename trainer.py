@@ -1,4 +1,5 @@
 import os
+import shutil
 import logging
 from tqdm import tqdm, trange
 
@@ -8,7 +9,7 @@ from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 from torch.optim import Adam
 
 from data_loader import load_word_matrix
-from utils import set_seed, load_vocab, compute_metrics, show_report, get_labels
+from utils import set_seed, load_vocab, compute_metrics, show_report, get_labels, get_test_texts
 from model import BiLSTM_CNN_CRF
 
 logger = logging.getLogger(__name__)
@@ -37,6 +38,13 @@ class Trainer(object):
         # GPU or CPU
         self.device = "cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu"
         self.model.to(self.device)
+
+        self.test_texts = None
+        if args.write_pred:
+            self.test_texts = get_test_texts(args)
+            # Empty the original prediction files
+            if os.path.exists(args.pred_dir):
+                shutil.rmtree(args.pred_dir)
 
     def train(self):
         train_sampler = RandomSampler(self.train_dataset)
@@ -80,14 +88,14 @@ class Trainer(object):
                 global_step += 1
 
                 if self.args.logging_steps > 0 and global_step % self.args.logging_steps == 0:
-                    self.evaluate("test")
+                    self.evaluate("test", global_step)
 
                 if self.args.save_steps > 0 and global_step % self.args.save_steps == 0:
                     self.save_model()
 
         return global_step, tr_loss / global_step
 
-    def evaluate(self, mode):
+    def evaluate(self, mode, step):
         if mode == 'test':
             dataset = self.test_dataset
         elif mode == 'dev':
@@ -147,6 +155,16 @@ class Trainer(object):
                 if out_label_ids[i, j] != self.pad_token_label_id:
                     out_label_list[i].append(slot_label_map[out_label_ids[i][j]])
                     preds_list[i].append(slot_label_map[preds[i][j]])
+
+        if self.args.write_pred:
+            if not os.path.exists(self.args.pred_dir):
+                os.mkdir(self.args.pred_dir)
+
+            with open(os.path.join(self.args.pred_dir, "pred_{}.txt".format(step)), "w", encoding="utf-8") as f:
+                for text, true_label, pred_label in zip(self.test_texts, out_label_list, preds_list):
+                    for t, tl, pl in zip(text, true_label, pred_label):
+                        f.write("{} {} {}\n".format(t, tl, pl))
+                    f.write("\n")
 
         result = compute_metrics(out_label_list, preds_list)
         results.update(result)

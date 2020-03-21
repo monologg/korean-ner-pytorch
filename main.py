@@ -21,7 +21,7 @@ def main(args):
 
     if args.do_eval:
         trainer.load_model()
-        trainer.evaluate("test")
+        trainer.evaluate("test", "eval")
 
 
 if __name__ == '__main__':
@@ -31,11 +31,13 @@ if __name__ == '__main__':
     parser.add_argument("--model_dir", default="./model", type=str, help="Path for saving model")
     parser.add_argument("--wordvec_dir", default="./wordvec", type=str, help="Path for pretrained word vector")
     parser.add_argument("--vocab_dir", default="./vocab", type=str)
+    parser.add_argument("--pred_dir", default="./preds", type=str, help="The prediction file dir")
 
     parser.add_argument("--train_file", default="train.tsv", type=str, help="Train file")
     parser.add_argument("--test_file", default="test.tsv", type=str, help="Test file")
     parser.add_argument("--label_file", default="label.txt", type=str, help="Label file")
     parser.add_argument("--w2v_file", default="word_vector_300d.vec", type=str, help="Pretrained word vector file")
+    parser.add_argument("--write_pred", action="store_true", help="Write prediction during evaluation")
 
     parser.add_argument("--max_seq_len", default=50, type=int, help="Max sentence length")
     parser.add_argument("--max_word_len", default=10, type=int, help="Max word length")
@@ -51,16 +53,16 @@ if __name__ == '__main__':
     parser.add_argument("--num_filters", default=32, type=int, help=" Number of filters for character cnn")
 
     parser.add_argument('--seed', type=int, default=42, help="random seed for initialization")
-    parser.add_argument("--train_batch_size", default=16, type=int, help="Batch size for training")
-    parser.add_argument("--eval_batch_size", default=32, type=int, help="Batch size for evaluation")
+    parser.add_argument("--train_batch_size", default=64, type=int, help="Batch size for training")
+    parser.add_argument("--eval_batch_size", default=128, type=int, help="Batch size for evaluation")
     parser.add_argument("--learning_rate", default=0.005, type=float, help="The initial learning rate")
     parser.add_argument("--num_train_epochs", default=15.0, type=float, help="Total number of training epochs to perform.")
     parser.add_argument("--slot_pad_label", default="PAD", type=str, help="Pad token for slot label pad (to be ignore when calculate loss)")
     parser.add_argument("--ignore_index", default=0, type=int,
                         help='Specifies a target value that is ignored and does not contribute to the input gradient')
 
-    parser.add_argument('--logging_steps', type=int, default=2500, help="Log every X updates steps.")
-    parser.add_argument('--save_steps', type=int, default=2500, help="Save checkpoint every X updates steps.")
+    parser.add_argument('--logging_steps', type=int, default=1200, help="Log every X updates steps.")
+    parser.add_argument('--save_steps', type=int, default=1200, help="Save checkpoint every X updates steps.")
 
     parser.add_argument("--do_train", action="store_true", help="Whether to run training.")
     parser.add_argument("--do_eval", action="store_true", help="Whether to run eval on the test set.")

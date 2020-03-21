@@ -79,15 +79,11 @@ class NaverNerProcessor(object):
             labels = labels.split()
             guid = "%s-%s" % (set_type, i)
 
-            labels_idx = []
-            for label in labels:
-                labels_idx.append(self.labels_lst.index(label) if label in self.labels_lst else self.labels_lst.index("UNK"))
-
-            assert len(words) == len(labels_idx)
+            assert len(words) == len(labels)
 
             if i % 10000 == 0:
                 logger.info(data)
-            examples.append(InputExample(guid=guid, words=words, labels=labels_idx))
+            examples.append(InputExample(guid=guid, words=words, labels=labels))
         return examples
 
     def get_examples(self, mode):
