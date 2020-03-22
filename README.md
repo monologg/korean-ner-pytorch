@@ -1,6 +1,6 @@
 # Korean NER with Pytorch
 
-Korean NER Task with CharCNN + BiLSTM + CRF (with Naver NLP Challenge dataset), implemented with `pytorch`
+Korean NER Task with CharCNN + BiLSTM + CRF (with Naver NLP Challenge dataset), implemented with `Pytorch`
 
 ## Model
 
