@@ -31,7 +31,7 @@ Korean NER Task with CharCNN + BiLSTM + CRF (with Naver NLP Challenge dataset), 
 
 ## Pretrained Word Vectors
 
-- Use [Korean fasttext vectors](https://fasttext.cc/docs/en/crawl-vectors.html) with 300 dimension
+- Use [Korean fastText vectors](https://fasttext.cc/docs/en/crawl-vectors.html) with 300 dimension
 - It takes quiet long time to load from original vector, so I take out the word vectors that are only in word vocab.
 - **It will be downloaded automatically when you run `main.py`.**
 
@@ -45,9 +45,10 @@ $ python3 main.py --do_train --do_eval
 
 ## Results
 
-|                | Slot F1 (%) |
-| -------------- | ----------- |
-| CNN+BiLSTM+CRF | 74.57       |
+|                            | Slot F1 (%) |
+| -------------------------- | ----------- |
+| CNN+BiLSTM+CRF             | 73.65       |
+| CNN+BiLSTM+CRF (+fastText) | 74.57       |
 
 ## Reference
 
