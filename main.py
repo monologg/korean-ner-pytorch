@@ -1,13 +1,14 @@
 import argparse
 
 from trainer import Trainer
-from utils import init_logger, build_vocab, download
+from utils import init_logger, build_vocab, download_w2v
 from data_loader import load_examples
 
 
 def main(args):
     init_logger()
-    download(args)
+    if not args.no_w2v:
+        download_w2v(args)
     build_vocab(args)
 
     train_dataset = load_examples(args, mode="train")

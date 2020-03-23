@@ -123,7 +123,7 @@ def load_vocab(args):
     return word_vocab, char_vocab, word_ids_to_tokens, char_ids_to_tokens
 
 
-def download(args):
+def download_w2v(args):
     """ Download pretrained word vector """
     w2v_path = os.path.join(args.wordvec_dir, args.w2v_file)
     # Pretrained word vectors
